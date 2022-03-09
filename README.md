@@ -1,1 +1,1 @@
-# mailft
+# mailft(Mail From Terminal)
