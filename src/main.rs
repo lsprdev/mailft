@@ -24,7 +24,7 @@ fn main() {
     let mailft = EmailBuilder::new()
         .to(mail_to)
         .from(mail_from)
-        .subject("Oi pelo Rust mais uma vez") // Email Subject
+        .subject("Hello with mailft") // Email Subject
         .html("<h1>Hello, World!</h1>") // Email body
         .build() 
         .unwrap();
