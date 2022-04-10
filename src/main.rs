@@ -1,31 +1,71 @@
-extern crate lettre;
+use std::io;
+use std::io::Write;
+use std::process;
+
 use lettre::smtp::authentication::Credentials;
-use lettre::{
-    SmtpClient, Transport
-};
+use lettre::{SmtpClient, Transport};
 use lettre_email::EmailBuilder;
+use rpassword;
 
-//use std::env; - let args: Vec<String> = env::args().collect();
+struct UserData {
+    user_email: String,
+    user_pwd: String,
+    user_email_server: String,
+    mailing_to: String,
+}
 
-//mod config_search; - config_search::run();
-mod config;
+fn get_data() -> Vec<String> {
+
+    // ============================== DECLARING VARS ==============================
+    let infos: Vec<String>;
+    let ( mut your_email, mut your_pwd, mut your_email_server, mut mail_to ) = {
+            ( String::new(), String::new(), String::new(), String::new())
+        };
+    let ( mut out, into ) = ( io::stdout(), io::stdin() );
+    // ============================== GETING INPUT ==============================
+    print!("Your email: ");
+    out.flush().unwrap();
+    into.read_line(&mut your_email).unwrap();
+
+    your_pwd = rpassword::prompt_password("Your password: ").unwrap(); 
+    // Reads passwords in terminal
+
+    print!("Your email server: ");
+    out.flush().unwrap();
+    into.read_line(&mut your_email_server).unwrap();
+
+    print!("Email that you're going to mail: ");
+    out.flush().unwrap();
+    into.read_line(&mut mail_to).unwrap();
+    infos = vec![your_email, your_pwd, your_email_server, mail_to];
+
+    infos // returning Vec<String> as especified (fn get_data() -> Vec<String>)
+
+}
 
 fn main() {
 
-    //config_search::run(); 
-    let info = config::run(); // Calling the function that return the vector "info"
+    let usr_info = get_data();
+    
+    let user = UserData {
+        user_email: String::from(usr_info[0].trim()),
+        user_pwd: String::from(usr_info[1].trim()),
+        user_email_server: String::from(usr_info[2].trim()),
+        mailing_to: String::from(usr_info[3].trim()),
+    };
 
-    let your_email = String::from(info[0].trim()); // Your email
-    let your_passwd = String::from(info[1].trim()); // Your password
-    let email_server = String::from(info[2].trim()); // The server of your email
-    let mail_to = String::from(info[3].trim()); // Email that you're mailing to
+    // ============================== LETTRE ==============================
+    let your_email = String::from(user.user_email); // Your email
+    let your_passwd = String::from(user.user_pwd); // Your password
+    let email_server = String::from(user.user_email_server); // The server of your email
+    let mail_to = String::from(user.mailing_to); // Email that you're mailing to
     let mail_from = your_email.clone(); 
     
     let mailft = EmailBuilder::new()
         .to(mail_to)
         .from(mail_from)
         .subject("Hello with mailft") // Email Subject
-        .html("<h1>Hello, World!</h1>") // Email body
+        .html("<h1>Hello, Mailft!</h1>") // Email body
         .build() 
         .unwrap();
 
