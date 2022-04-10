@@ -1,22 +1,30 @@
 extern crate lettre;
-use std::env;
 use lettre::smtp::authentication::Credentials;
 use lettre::{
     SmtpClient, Transport
 };
 use lettre_email::EmailBuilder;
 
+//use std::env; - let args: Vec<String> = env::args().collect();
+
+//mod config_search; - config_search::run();
+mod config;
+
 fn main() {
-    let your_email = String::from("mailft@mail.com"); // Your email
-    let your_passwd = String::from("linusisalegend"); // Your password
-    let email_server = String::from("smtp.mailft.com"); // The server of your email
-    let mail_to = String::from("mailft2@mail.com"); // Email that you're mailing to
+
+    //config_search::run(); 
+    let info = config::run(); // Calling the function that return the vector "info"
+
+    let your_email = String::from(info[0].trim()); // Your email
+    let your_passwd = String::from(info[1].trim()); // Your password
+    let email_server = String::from(info[2].trim()); // The server of your email
+    let mail_to = String::from(info[3].trim()); // Email that you're mailing to
     let mail_from = your_email.clone(); 
     
     let mailft = EmailBuilder::new()
         .to(mail_to)
         .from(mail_from)
-        .subject("Hello From Rust!") // Email Subject
+        .subject("Oi pelo Rust mais uma vez") // Email Subject
         .html("<h1>Hello, World!</h1>") // Email body
         .build() 
         .unwrap();
