@@ -6,3 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+lettre = "0.9"
+lettre_email = "0.9"
+rpassword = "6.0"
+promptly = "0.3.0"
