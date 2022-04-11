@@ -1,6 +1,6 @@
 use std::io;
 use std::io::Write;
-use std::process;
+//use std::process;
 
 use lettre::smtp::authentication::Credentials;
 use lettre::{SmtpClient, Transport};
@@ -18,9 +18,11 @@ fn get_data() -> Vec<String> {
 
     // ============================== DECLARING VARS ==============================
     let infos: Vec<String>;
-    let ( mut your_email, mut your_pwd, mut your_email_server, mut mail_to ) = {
-            ( String::new(), String::new(), String::new(), String::new())
+    let ( mut your_email, mut your_email_server, mut mail_to ) = {
+            ( String::new(), String::new(), String::new())
         };
+    let your_pwd;
+    let mut sub = String::new();
     let ( mut out, into ) = ( io::stdout(), io::stdin() );
     // ============================== GETING INPUT ==============================
     print!("Your email: ");
@@ -37,7 +39,14 @@ fn get_data() -> Vec<String> {
     print!("Email that you're going to mail: ");
     out.flush().unwrap();
     into.read_line(&mut mail_to).unwrap();
-    infos = vec![your_email, your_pwd, your_email_server, mail_to];
+
+    println!("====================================");
+
+    print!("Subject of the Email: ");
+    out.flush().unwrap();
+    into.read_line(&mut sub).unwrap();
+
+    infos = vec![your_email, your_pwd, your_email_server, mail_to, sub];
 
     infos // returning Vec<String> as especified (fn get_data() -> Vec<String>)
 
@@ -64,7 +73,7 @@ fn main() {
     let mailft = EmailBuilder::new()
         .to(mail_to)
         .from(mail_from)
-        .subject("Hello with mailft") // Email Subject
+        .subject(usr_info[4].trim()) // Email Subject
         .html("<h1>Hello, Mailft!</h1>") // Email body
         .build() 
         .unwrap();
